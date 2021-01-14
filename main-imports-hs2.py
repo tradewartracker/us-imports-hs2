@@ -159,10 +159,7 @@ def make_plot():
     
         tradewar_box = BoxAnnotation(left=dt.datetime(2018,7,1), right=dt.datetime(2019,10,11), fill_color='red', fill_alpha=0.1)
         plot.add_layout(tradewar_box)
-        
-        tradewar_box = BoxAnnotation(left=dt.datetime(2020,1,1), right=dt.datetime(2021,12,31), fill_color='blue', fill_alpha=0.1)
-        plot.add_layout(tradewar_box)
-        
+                
     #p.yaxis.axis_label = 
     plot.yaxis.axis_label_text_font_style = 'bold'
     plot.yaxis.axis_label_text_font_size = "13px"
