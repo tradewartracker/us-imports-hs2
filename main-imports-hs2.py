@@ -46,8 +46,9 @@ level = "US Dollars"
 
 def growth_trade(foo):
     # what this function does is take a dataframe and create a relative 
-        
-    return 100*((foo["imports"]/foo["imports"].shift(12)) - 1)
+    foo["growth"] = 100*((foo["imports"]/foo["imports"].shift(12)) - 1)    
+    
+    return foo
 
 #################################################################################
 # Then this makes the simple plots:
@@ -119,7 +120,11 @@ def make_plot():
     plot.grid.grid_line_alpha = 0.3
     
     TIMETOOLTIPS = """
-            <div style="background-color:#F5F5F5; opacity: 0.95; border: 15px 15px 15px 15px;">
+            <div style="background-color:#F5F5F5; opacity: 0.95; border: 5px 5px 5px 5px;">
+            <div style = "text-align:left;">
+            <span style="font-size: 13px; font-weight: bold"> @label
+             </span>
+             </div>
              <div style = "text-align:left;">"""
     
     if level_select.value == 'Year over Year % Change':
@@ -160,7 +165,7 @@ def make_plot():
         plot.add_tools(HoverTool(tooltips = TIMETOOLTIPS,  line_policy='nearest', formatters={'$data_x': 'datetime'}))
                 
     if level_select.value == 'Year over Year % Change':
-        if y.max() > 1500:
+        if foo[level_series].max() > 1500:
             plot.y_range.end = 1500
     
     
