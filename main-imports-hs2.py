@@ -255,4 +255,4 @@ layout = row(make_plot(), controls, sizing_mode = "scale_height", max_height = h
 
 curdoc().add_root(layout)
 curdoc().title = "us-imports-hs2-products"
-#curdoc().add_root(column(plot))
+curdoc().add_root(column(p)
