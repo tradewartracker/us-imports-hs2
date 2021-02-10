@@ -10,7 +10,7 @@ import pyarrow.parquet as pq
 
 from bokeh.io import curdoc
 from bokeh.layouts import column, gridplot, row
-from bokeh.models import ColumnDataSource, DataRange1d, Select, HoverTool, Panel, Tabs, LinearColorMapper, Range1d
+from bokeh.models import ColumnDataSource, DataRange1d, Select, HoverTool, Panel, Tabs, LinearColorMapper, Range1d, MultiChoice
 from bokeh.models import NumeralTickFormatter, Title, Label, Paragraph, Div, CustomJSHover, BoxAnnotation
 from bokeh.models import ColorBar
 from bokeh.palettes import brewer, Spectral6
@@ -57,44 +57,60 @@ def make_plot():
     height = int(1.15*533)
     width = int(1.15*750)
     
-    foo = df.loc[country_select.value]
-    
-    foo = foo.loc[product_select.value]
+    foo = df.loc[(country_select.value, product_select.value),:]
     # below there is an object of selections which will be one of the values in 
-    # the list of options. So the .value then grabs that particular option selected.
-
-    x = foo.index
+    # the list of options. So the .value then grabs that particular option selected
     
     if level_select.value == 'US Dollars':
-        y = foo['imports']
+        level_series = "imports"
         
-        title = "US Imports from " + country_select.value.title().upper() + " of " + product_select.value.title().upper()
+        lead_title = "US Imports from " 
         
     if level_select.value == 'Tariff Revenue':
-        y = foo['duty']
+        level_series = "duty"
         
-        title = "US Tariff Revenue on " + country_select.value.title().upper() + " of " + product_select.value.title().upper()
+        lead_title  = "US Tariff Revenue on " 
         
     if level_select.value == 'Implied Tariff':
-        y = foo['itariff']
+        level_series = "itariff"
         
-        title = "US Implied Tariff on " + country_select.value.title().upper() + " of " + product_select.value.title().upper()
+        lead_title  = "US Implied Tariff on " 
         
     if level_select.value == 'Year over Year % Change':
-        y = growth_trade(foo)
         
-        title = "US Imports from " + country_select.value.title().upper() + " of " + product_select.value.title().upper()
+        foo = foo.groupby(["CTY_NAME"]).apply(growth_trade)
+        level_series = "growth"
         
+        lead_title = "US Imports from " 
+        
+    title_name = ""
+        
+    for name in country_select.value:
+        
+        if len(country_select.value) <= 2:
+            title_name = title_name + name + ", "
+            
+        if len(country_select.value) > 2:
+            title_name = title_name + name[0:3] + ", "
+        
+    title = lead_title + title_name + "of " + product_select.value.title().upper()    
 
-    if level_select.value != "Cumulative Purchases 2020 vs 2017":
-        
-    # This is standard bokeh stuff so far
-        plot = figure(x_axis_type="datetime", plot_height = height, plot_width=width, toolbar_location = 'below',
-           tools = "box_zoom, reset, pan, xwheel_zoom, ywheel_zoom", title = title,
+    plot = figure(x_axis_type="datetime", plot_height = height, plot_width=width, toolbar_location = 'below',
+           tools = "box_zoom, reset, pan, xwheel_zoom", title = title,
                   x_range = (dt.datetime(2017,7,1),dt.datetime(2021,final_month,1)) )
 
-        plot.line(x = x,
-              y = y, line_width=3.5, line_alpha=0.75, line_color = "slategray")
+    numlines=len(country_select.value)
+    
+    multi_line_source = ColumnDataSource({
+            'xs': [foo.index.get_level_values(2).unique()]*numlines,
+            'ys': [foo.loc[(name, product_select.value),level_series].values for name in country_select.value],
+            'label': [name for name in country_select.value]})
+
+    plot.multi_line(xs= "xs",
+                ys= "ys",
+                line_width=3, line_alpha=0.75, line_color = "slategray",
+                hover_line_alpha=0.75, hover_line_width = 5,
+                hover_line_color= "crimson", source = multi_line_source)
         
     # fixed attributes
     plot.xaxis.axis_label = None
@@ -207,27 +223,27 @@ level_select.on_change('value', update_plot)
 #print(sorted(options))
 #################################################################################
 
-country_select = Select(value=country, title='Country', options=sorted(country_options), width=400)
+country_select = MultiChoice(value=[country], title='Country', options=sorted(country_options), width=325)
 # This is the key thing that creates teh selection object
 
 country_select.on_change('value', update_plot)
                         
 #################################################################################
 
-product_select = Select(value=product, title='HS2 Product', options=sorted(product_options), width=400)
+product_select = Select(value=product, title='HS2 Product', options=sorted(product_options), width=350)
 # This is the key thing that creates teh selection object
 
 product_select.on_change('value', update_plot)
 # Change the value upone selection via the update plot 
 
 div0 = Div(text = """Each category is a 2 digit HS Code. ALL PRODUCTS is the sum of imports across all product catagories.\n
-    """, width=400, background = background, style={"justify-content": "space-between", "display": "flex"} )
+    """, width=350, background = background, style={"justify-content": "space-between", "display": "flex"} )
 
 div1 = Div(text = """Top 20 Countries by import volume and TOTAL which aggregates across all countries in the world.\n
-    """, width=400, background = background, style={"justify-content": "space-between", "display": "flex"} )
+    """, width=350, background = background, style={"justify-content": "space-between", "display": "flex"} )
 
 div2 = Div(text = """Transformations: Dollars, Year over Year Percent Change, Tariff (Duty) Revenue, Implied Tariff\n
-    """, width=400, background = background, style={"justify-content": "space-between", "display": "flex"} )
+    """, width=350, background = background, style={"justify-content": "space-between", "display": "flex"} )
 
 controls = column(country_select,div1, product_select, div0, level_select,div2)
 
@@ -239,4 +255,4 @@ layout = row(make_plot(), controls, sizing_mode = "scale_height", max_height = h
 
 curdoc().add_root(layout)
 curdoc().title = "us-imports-hs2-products"
-curdoc().add_root(column(p))
+#curdoc().add_root(column(plot))
