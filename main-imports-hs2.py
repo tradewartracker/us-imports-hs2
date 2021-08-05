@@ -23,7 +23,7 @@ from bokeh.transform import factor_cmap
 # Alot of this was built of this "cross-fire demo"
 # https://github.com/bokeh/bokeh/blob/branch-2.3/examples/app/crossfilter/main.py
 
-final_month = 9
+final_month = 10
 
 background = "#ffffff"
 
@@ -175,7 +175,7 @@ def make_plot():
     plot.background_fill_alpha = 0.75
     plot.border_fill_color = background 
     
-    tradewar_box = BoxAnnotation(left=dt.datetime(2020,3,1), right=dt.datetime(2022,12,31), fill_color='red', fill_alpha=0.1)
+    tradewar_box = BoxAnnotation(left=dt.datetime(2020,2,1), right=dt.datetime(2020,4,30), fill_color='red', fill_alpha=0.1)
     plot.add_layout(tradewar_box)
     
     if country_select.value == "CHINA":
