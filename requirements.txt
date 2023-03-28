@@ -1,5 +1,5 @@
 backcall
-bokeh
+bokeh==2.0.0
 brotlipy
 certifi
 cffi 
