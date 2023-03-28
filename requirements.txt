@@ -9,8 +9,8 @@ Cmake
 decorator
 idna  
 jedi
-Jinja2
-MarkupSafe
+Jinja2==2.11.2
+MarkupSafe==1.1.1
 numpy
 packaging
 pandas
