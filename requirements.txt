@@ -37,3 +37,4 @@ tqdm
 typing-extensions==3.7.4.3
 urllib3  
 wcwidth==0.2.5
+python==3.11.2
