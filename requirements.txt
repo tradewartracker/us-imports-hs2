@@ -4,7 +4,8 @@ brotlipy==0.7.0
 certifi==2020.12.5
 cffi 
 chardet  
-cryptography  
+cryptography
+Cmake
 decorator==4.4.2
 idna  
 jedi==0.17.2
