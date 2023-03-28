@@ -10,7 +10,7 @@ idna
 jedi==0.17.2
 Jinja2==2.11.2
 MarkupSafe==1.1.1
-numpy==1.22.0
+numpy
 packaging==20.7
 pandas==1.1.5
 parso==0.7.1
