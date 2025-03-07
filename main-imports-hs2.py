@@ -86,10 +86,15 @@ def make_plot():
     if level_select.value == 'Year over Year % Change':
         
         foo = df.loc[(country_select.value, product_select.value),:].groupby(["CTY_NAME"]).apply(growth_trade)
-        
+
         level_series = "growth"
         
         lead_title = "US Imports from " 
+
+        # Debugging: Print the content of DataFrame 'foo' after grouping
+        print("DataFrame 'foo' after grouping:")
+        print(foo.head())
+        print("foo index levels:", foo.index.names)
         
     title_name = ""
         
