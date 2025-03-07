@@ -85,7 +85,7 @@ def make_plot():
         
     if level_select.value == 'Year over Year % Change':
         
-        foo = df.loc[(country_select.value, product_select.value),:].groupby(["CTY_NAME"]).apply(growth_trade)
+        foo = foo.groupby(["CTY_NAME"]).apply(growth_trade).reset_index(level=0, drop=True)
 
         level_series = "growth"
         
