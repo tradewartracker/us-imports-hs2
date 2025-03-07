@@ -23,7 +23,7 @@ from bokeh.transform import factor_cmap
 # Alot of this was built of this "cross-fire demo"
 # https://github.com/bokeh/bokeh/blob/branch-2.3/examples/app/crossfilter/main.py
 
-final_month = 5
+final_month = 7
 final_year = 2025
 
 background = "#ffffff"
@@ -47,7 +47,11 @@ level = "US Dollars"
 
 def growth_trade(foo):
     # what this function does is take a dataframe and create a relative 
-    foo["growth"] = 100*((foo["imports"]/foo["imports"].shift(12)) - 1)    
+    foo["imports_shifted"] = foo["imports"].shift(12)
+
+    foo["growth"] = 100 * ((foo["imports"] / foo["imports_shifted"]) - 1)
+
+    foo["growth"].fillna(0, inplace=True)
     
     return foo
 
