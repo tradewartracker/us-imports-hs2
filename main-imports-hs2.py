@@ -51,9 +51,10 @@ def growth_trade(foo):
 
     foo["growth"] = 100 * ((foo["imports"] / foo["imports_shifted"]) - 1)
 
-    foo["growth"].fillna(0, inplace=True)
+    foo["growth"] = foo["growth"].fillna(0)
     
     return foo
+
 
 #################################################################################
 # Then this makes the simple plots:
