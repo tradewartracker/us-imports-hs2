@@ -20,10 +20,10 @@ from bokeh.transform import factor_cmap
 
 #################################################################################
 # This just loads in the data...
-# Alot of this was built of this "cross-fire demo"
+# Alot of this was built off this "cross-fire demo"
 # https://github.com/bokeh/bokeh/blob/branch-2.3/examples/app/crossfilter/main.py
 
-final_month = 7
+final_month = 8
 final_year = 2025
 
 background = "#ffffff"
@@ -86,15 +86,16 @@ def make_plot():
     if level_select.value == 'Year over Year % Change':
         
         foo = foo.groupby(["CTY_NAME"]).apply(growth_trade).reset_index(level=0, drop=True)
+        # the .reset_index seems to be needed for the groupby to work properly on pandas > 3.0
 
         level_series = "growth"
         
         lead_title = "US Imports from " 
 
         # Debugging: Print the content of DataFrame 'foo' after grouping
-        print("DataFrame 'foo' after grouping:")
-        print(foo.head())
-        print("foo index levels:", foo.index.names)
+        #print("DataFrame 'foo' after grouping:")
+        #print(foo.head())
+        #print("foo index levels:", foo.index.names)
         
     title_name = ""
         
