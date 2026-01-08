@@ -23,7 +23,7 @@ from bokeh.transform import factor_cmap
 # Alot of this was built off this "cross-fire demo"
 # https://github.com/bokeh/bokeh/blob/branch-2.3/examples/app/crossfilter/main.py
 
-final_month = 3
+final_month = 4
 final_year = 2026
 
 background = "#ffffff"
